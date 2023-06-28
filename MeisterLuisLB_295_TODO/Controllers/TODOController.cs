@@ -1,6 +1,7 @@
 ﻿using MeisterLuisLB_295_TODO.Model;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MeisterLuisLB_295_TODO.Controllers
 {
@@ -13,6 +14,39 @@ namespace MeisterLuisLB_295_TODO.Controllers
         public TODOController(TODODB context)
         {
             _context = context;
+        }
+
+        // GET: api/TODO
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TODODTO>>> GetTODO()
+        {
+            if (_context.TODOs == null)
+            {
+                return NotFound();
+            }
+
+            var todos = await _context.TODOs.ToListAsync();
+            var todoDTOs = todos.Select(todo => TODOToTODODTO(todo)).ToList();
+
+            return todoDTOs;
+        }
+
+        // GET: api/TODO/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TODODTO>> GetTODO(int id)
+        {
+            if (_context.TODOs == null)
+            {
+                return NotFound();
+            }
+            var mitarbeiter = await _context.TODOs.FindAsync(id);
+
+            if (mitarbeiter == null)
+            {
+                return NotFound();
+            }
+
+            return TODOToTODODTO(mitarbeiter);
         }
 
         // POST: api/TODO
@@ -35,14 +69,16 @@ namespace MeisterLuisLB_295_TODO.Controllers
             return CreatedAtAction("PostTODO", new { id = todo.Id }, todo);
         }
 
-        private static TODO GetTODO(TODO todo)
+        private static TODODTO TODOToTODODTO(TODO todo)
         {
-            return new TODO
+            return new TODODTO
             {
                 Id = todo.Id,
                 Name = todo.Name,
-                Content = todo.Content
+                Content = todo.Content,
             };
         }
+
+
     }
 }

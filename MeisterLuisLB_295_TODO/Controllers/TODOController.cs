@@ -121,5 +121,25 @@ namespace MeisterLuisLB_295_TODO.Controllers
         {
             return (_context.TODOs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        // DELETE: api/TODO/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTODO(int id)
+        {
+            if (_context.TODOs == null)
+            {
+                return NotFound();
+            }
+            var todo = await _context.TODOs.FindAsync(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            _context.TODOs.Remove(todo);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

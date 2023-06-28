@@ -21,7 +21,7 @@ namespace MeisterLuisLB_295_TODO.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MeisterLuisLB_295_TODO.TODO", b =>
+            modelBuilder.Entity("MeisterLuisLB_295_TODO.Model.TODO", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace MeisterLuisLB_295_TODO.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TDOs");
+                    b.ToTable("TODOs");
                 });
 #pragma warning restore 612, 618
         }

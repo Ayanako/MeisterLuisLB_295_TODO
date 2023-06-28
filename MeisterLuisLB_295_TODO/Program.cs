@@ -1,23 +1,20 @@
 using MeisterLuisLB_295_TODO.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add the database context as a service with the connection string
+builder.Services.AddDbContext<TODODB>(options => options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=TODODB;Trusted_Connection=True"));
 
-// Details zur Datenbank-Verbindung aus der Konfiguration holen
-var connectionString = builder.Configuration.GetConnectionString("TODODB");
-// Verbindung zur Datenbank als Service (für Dependency-Injection) hinzufügen
-builder.Services.AddDbContext<TODODB>(options => options.UseSqlServer(connectionString));
-// Add services to the container.
-
+// Add other services to the container
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -25,7 +22,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();

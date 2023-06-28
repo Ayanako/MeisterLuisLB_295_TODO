@@ -1,6 +1,6 @@
 ﻿namespace MeisterLuisLB_295_TODO.Model
 {
-    public class TODOTDO
+    public class TODODTO
     {
         public int Id { get; set; }
         public string Name { get; set; }

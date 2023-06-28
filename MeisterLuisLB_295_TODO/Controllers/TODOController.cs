@@ -80,5 +80,46 @@ namespace MeisterLuisLB_295_TODO.Controllers
         }
 
 
+        // PUT: api/TODO/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTODO(int id, TODODTO todoDTO)
+        {
+            if (id != todoDTO.Id)
+            {
+                return BadRequest();
+            }
+            var todo = await _context.TODOs.FindAsync(todoDTO.Id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+            todo.Name = todoDTO.Name;
+            todo.Content = todoDTO.Content;
+
+            _context.Entry(todo).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TodoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool TodoExists(int id)
+        {
+            return (_context.TODOs?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
     }
 }

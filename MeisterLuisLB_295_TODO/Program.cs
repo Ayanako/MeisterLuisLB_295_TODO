@@ -1,5 +1,13 @@
+using MeisterLuisLB_295_TODO.Model;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Details zur Datenbank-Verbindung aus der Konfiguration holen
+var connectionString = builder.Configuration.GetConnectionString("TODODB");
+// Verbindung zur Datenbank als Service (für Dependency-Injection) hinzufügen
+builder.Services.AddDbContext<TODODB>(options => options.UseSqlServer(connectionString));
 // Add services to the container.
 
 builder.Services.AddControllers();

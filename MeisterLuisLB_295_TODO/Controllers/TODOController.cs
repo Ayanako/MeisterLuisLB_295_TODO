@@ -20,53 +20,41 @@ namespace MeisterLuisLB_295_TODO.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TODODTO>>> GetTODO()
         {
-            if (_context.TODOs == null)
-            {
-                return NotFound();
-            }
-
             var todos = await _context.TODOs.ToListAsync();
             var todoDTOs = todos.Select(todo => TODOToTODODTO(todo)).ToList();
 
             return todoDTOs;
         }
 
-        // GET: api/TODO/5
+        // GET: api/TODO/
         [HttpGet("{id}")]
         public async Task<ActionResult<TODODTO>> GetTODO(int id)
         {
-            if (_context.TODOs == null)
-            {
-                return NotFound();
-            }
-            var mitarbeiter = await _context.TODOs.FindAsync(id);
+            var todo = await _context.TODOs.FindAsync(id);
 
-            if (mitarbeiter == null)
+            if (todo == null)
             {
                 return NotFound();
             }
 
-            return TODOToTODODTO(mitarbeiter);
+            return TODOToTODODTO(todo);
         }
 
         // POST: api/TODO
         [HttpPost]
         public async Task<ActionResult<TODODTO>> PostTODO(TODODTO todoDTO)
         {
-            if (_context.TODOs == null)
-            {
-                return Problem("Entity set 'TODODB.todo' is null.");
-            }
             var todo = new TODO
             {
-                Id = todoDTO.Id,
                 Name = todoDTO.Name,
                 Content = todoDTO.Content
             };
+
             _context.TODOs.Add(todo);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("PostTODO", new { id = todo.Id }, todo);
+            todoDTO.Id = todo.Id;
+            return CreatedAtAction(nameof(PostTODO), new { id = todo.Id }, todoDTO);
         }
 
         private static TODODTO TODOToTODODTO(TODO todo)
@@ -75,10 +63,9 @@ namespace MeisterLuisLB_295_TODO.Controllers
             {
                 Id = todo.Id,
                 Name = todo.Name,
-                Content = todo.Content,
+                Content = todo.Content
             };
         }
-
 
         // PUT: api/TODO/5
         [HttpPut("{id}")]
@@ -88,15 +75,15 @@ namespace MeisterLuisLB_295_TODO.Controllers
             {
                 return BadRequest();
             }
-            var todo = await _context.TODOs.FindAsync(todoDTO.Id);
+
+            var todo = await _context.TODOs.FindAsync(id);
             if (todo == null)
             {
                 return NotFound();
             }
+
             todo.Name = todoDTO.Name;
             todo.Content = todoDTO.Content;
-
-            _context.Entry(todo).State = EntityState.Modified;
 
             try
             {
@@ -119,17 +106,13 @@ namespace MeisterLuisLB_295_TODO.Controllers
 
         private bool TodoExists(int id)
         {
-            return (_context.TODOs?.Any(e => e.Id == id)).GetValueOrDefault();
+            return _context.TODOs.Any(e => e.Id == id);
         }
 
         // DELETE: api/TODO/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTODO(int id)
         {
-            if (_context.TODOs == null)
-            {
-                return NotFound();
-            }
             var todo = await _context.TODOs.FindAsync(id);
             if (todo == null)
             {
